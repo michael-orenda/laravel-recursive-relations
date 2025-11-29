@@ -1,41 +1,34 @@
-# Changelog
+# Changelog  
+Laravel Recursive Relations Package
 
-All notable changes to this project will be documented in this file.
-
-The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)  
-and this project adheres to [Semantic Versioning](https://semver.org/).
+This project follows [Semantic Versioning](https://semver.org/) and the formatting style of [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
 ## [Unreleased]
 ### Added
-- Initial package bootstrap.
-- `HasRecursiveRelations` trait with:
-  - `children()`
-  - `parent()`
-  - `descendants()`
-  - `ancestors()`
-- Custom key configuration via `recursiveConfig()`.
-- Query scopes: `roots()`, `leaves()`, `withDescendants()`.
-- Service provider.
-- Full documentation, API docs, contributing guide, security policy.
+- Improved recursive engine with clean `tree()` and `descendants()` separation.
+- Added explicit nullable parameter types for PHP 8.2+ compatibility.
+- Added optimized `buildTree()` for non-duplicated nested structures.
+- Added support for Laravel **12+** auto-discovery.
+- Added documentation improvements and clarified API behavior.
+- Added `root()` ancestry resolution method.
+- Added integration instructions for external packages (OrgUnit, Category, Menu, Filesystem, etc.).
+
+### Changed
+- Deprecated previous mixed-mode descendants method and replaced with clean flat version.
+- Updated namespaces to `MichaelOrenda\LaravelRecursiveRelations`.
+- Modernized package structure to Laravel package conventions for 2025.
+
+### Fixed
+- Removed repeated subtree loading when resolving children.
+- Corrected deprecation warnings in PHP 8.3+.
+- Ensured eager-loaded children no longer cause repeated recursion.
 
 ---
 
-## [1.0.0] — 2025-11-29
+## [1.1.0] – 2025-11-29
 ### Added
-- First stable release.
-- Trait-based recursive tree relationship engine.
-- Installation instructions & full README.
-- Files:
-  - `README.md`
-  - `CONTRIBUTING.md`
-  - `SECURITY.md`
-  - `API_DOCS.md`
-  - `LICENSE`
-
----
-
-[Unreleased]: https://github.com/michael-orenda/laravel-recursive-relations/compare/v1.0.0...HEAD  
-[1.0.0]: https://github.com/michael-orenda/laravel-recursive-relations/releases/tag/v1.0.0
-
+- Introduced `tree()` method providing pure nested structure.
+- Introduced clean `descendants()` returning flat lists.
+- Added depth limiting support for

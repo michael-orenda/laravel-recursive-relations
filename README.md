@@ -1,66 +1,57 @@
-# Recursive Relations for Laravel
+# Laravel Recursive Relations  
+Powerful recursive parent–child relationships for Laravel **12+**
 
-A lightweight Laravel package that adds **recursive parent–child relationships** to any Eloquent model.  
-Use it for:
-- Categories  
-- Menus  
-- Departments  
-- Organizational units  
-- Nested structures  
-- Multi-level hierarchies
+A lightweight, framework-native package for building hierarchical data structures such as:
 
----
-
-## Features
-- Plug-and-play trait (`HasRecursiveRelations`)
-- `children`, `parent`, `descendants`, `ancestors`
-- Custom parent key/local key support
-- Unlimited recursion depth
-- Optional depth limiting
-- Query scopes for roots & leaves
-- Efficient traversal and eager loading
+- Organization Units  
+- Categories & Subcategories  
+- File Trees  
+- Product & Menu Structures  
+- Multi-level Comment Threads  
+- Any recursive / tree-based domain  
 
 ---
 
-## Installation
+## 🚀 Features
+
+- **Pure nested tree output** via `tree()`
+- **Flat descendant lists** via `descendants()`
+- **Unlimited or depth-limited recursion**
+- **Guaranteed no repetition / no duplicated nodes**
+- **Automatic ancestry resolution** (`ancestors()`, `root()`)
+- Optional caching layer via `HasRecursiveCache`
+- Fully compatible with **Laravel 12+**
+- Zero dependencies; Eloquent-powered
+- Works with any model
+
+---
+
+## 📦 Installation
 
 ```bash
-composer require michael-orenda/recursive-relations
+composer require michaelorenda/laravel-recursive-relations
 ```
 
-If using private SSH repo:
-
-```json
-"repositories": [
-    {
-        "type": "vcs",
-        "url": "git@github.com:michael-orenda/laravel-recursive-relations.git"
-    }
-]
-```
-
-Then:
-
-```bash
-composer require michael-orenda/recursive-relations:dev-main
-```
+Laravel will auto-discover the service provider.
 
 ---
 
-## Usage
+## 🧩 Usage Example
 
-### 1. Add the trait
+### 1. Add the Trait
 
 ```php
-use MichaelOrenda\RecursiveRelations\Traits\HasRecursiveRelations;
+use MichaelOrenda\LaravelRecursiveRelations\Traits\HasRecursiveRelations;
 
 class Category extends Model
 {
     use HasRecursiveRelations;
+
+    protected $fillable = ['name', 'parent_id'];
 }
 ```
 
-### 2. Migration
+### 2. Required Migration
 
 ```php
 $table->unsignedBigInteger('parent_id')->nullable()->index();
@@ -68,66 +59,87 @@ $table->unsignedBigInteger('parent_id')->nullable()->index();
 
 ---
 
-## Examples
+## 🌳 Building Trees
 
-### Creating a tree
+### Pure Nested Tree
 
 ```php
-$root = Category::create(['name' => 'Electronics']);
-$phones = $root->children()->create(['name' => 'Phones']);
-$phones->children()->create(['name' => 'Smartphones']);
+$tree = Category::find(1)->tree();
 ```
 
-### Getting descendants
+Produces:
 
-```php
-$root->descendants();        // all levels
-$root->descendants(1);       // direct children only
+```json
+[
+  {
+    "id": 2,
+    "name": "Child",
+    "children": [
+      { "id": 7, "name": "Grandchild", "children": [] }
+    ]
+  }
+]
 ```
 
-### Getting ancestors
+✔️ No duplication  
+✔️ No repeated branches  
+✔️ Perfect hierarchy  
+
+### Flat Descendants
 
 ```php
-$smartphones->ancestors();   // Smartphones → Phones → Electronics
-```
-
-### Eager loading
-
-```php
-Category::with('children.children')->get();
+$flat = Category::find(1)->descendants();
 ```
 
 ---
 
-## Advanced: Custom keys
+## 🔗 Ancestry Tools
+
+```php
+$node->parent;
+$node->children;
+$node->ancestors(); 
+$node->root();
+```
+
+---
+
+## ⚙️ Customizing Keys
 
 ```php
 protected static function recursiveConfig(): array
 {
     return [
-        'parent_key' => 'parent_category_id',
-        'local_key'  => 'id',
+        'parent_key' => 'parent_unit_id',
+        'local_key'  => 'unit_id',
     ];
 }
 ```
 
 ---
 
-## API Documentation
+## 📚 API Documentation
+
 See [`API_DOCS.md`](API_DOCS.md)
 
 ---
 
-## Contributing
-See [`CONTRIBUTING.md`](CONTRIBUTING.md)
+## 🔐 Security
 
----
-
-## Security
 See [`SECURITY.md`](SECURITY.md)
 
 ---
 
-## License
-MIT — see `LICENSE`
+## 🤝 Contributing
 
+PRs welcome! Follow PSR-12 and include tests.
+
+---
+
+## 📄 License
+
+MIT — Free for personal and commercial use.
+
+---
+
+_Last updated: 2025-11-29_

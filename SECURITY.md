@@ -1,80 +1,58 @@
-# Security Policy
+# Security Policy  
+Laravel Recursive Relations Package
 
-We take security seriously. If you discover a vulnerability in this project, please follow this policy to report it responsibly.
+---
 
 ## Supported Versions
 
-| Version | Status    |
-| ------- | --------- |
-| `1.0.x` | Supported |
-
-When a version is no longer supported it will be mentioned in this file.
+| Version | Status |
+|--------|---------|
+| 1.1.x  | Fully Supported |
+| 1.0.x  | Security fixes only |
 
 ---
 
 ## Reporting a Vulnerability
 
-If you believe you've found a security issue, **please do not create a public issue**. Instead, report it privately by emailing:
+Please report security issues **privately**.
+
+Email:
 
 ```
-rminchrist@gmail.com
+security@michael-orenda.dev
 ```
 
-(If you don't have a dedicated security inbox, use your GitHub username DM or add an issue with the `private` option disabled — but private email is preferred.)
+Do **not** open a public GitHub issue for security concerns.
 
-### Required information
+Include where possible:
 
-When you report an issue, please include:
-
-* A clear description of the vulnerability and its impact.
-* Reproduction steps or a minimal proof-of-concept.
-* A suggested fix (if possible).
-* Affected versions.
-* Your contact details (email) and a preferred timeline for disclosure.
-
----
-
-## Security process
-
-1. **Acknowledgement** — We will acknowledge your report within 72 hours.
-2. **Triage** — We will assess severity and risk and attempt to reproduce the issue.
-3. **Fix** — We will provide a fix in a timely manner and include tests where feasible.
-4. **Disclosure** — Once a fix is available, we will coordinate public disclosure. We prefer coordinated disclosure to avoid exposing users.
+- Vulnerability description  
+- Steps to reproduce  
+- Severity estimate  
+- Laravel version  
+- PHP version  
+- Suggested patch (optional)  
 
 ---
 
-## PGP / Encryption
+## Disclosure Process
 
-If you would like to send a report encrypted, use the project's PGP key (if published). If no PGP key is published, you can request an ephemeral key by emailing the security contact.
+1. Acknowledge within 48–72 hours  
+2. Validate and reproduce the issue  
+3. Patch or respond within 14 days  
+4. Publish advisory after coordinated release  
 
----
-
-## Timeline & Coordination
-
-We aim to:
-
-* Acknowledge within 72 hours
-* Provide a patch or mitigation within 14 days for high severity issues (depending on complexity)
-* Coordinate disclosure and publish an advisory with credit
-
-If you are a security researcher and require a CVE, please indicate this in your report.
+Researchers may request CVE attribution.
 
 ---
 
-## Third-party dependencies
+## Security Best Practices
 
-Security of third-party packages is important. Keep dependencies up-to-date and check `composer.lock` for known vulnerabilities using tools like `composer audit` or `Roave/SecurityAdvisories`.
-
----
-
-## Disclosure FAQ
-
-**Q: Do you accept public bug bounty reports?**
-A: We don't operate a bounty program currently, but we will credit reporters in release notes unless you request anonymity.
-
-**Q: Can I post a public issue?**
-A: Please avoid public disclosure until a fix is available — contact the security email first.
+- Use indexed parent keys  
+- Prevent cycles in parent-child assignments  
+- Validate parent belongs to same tree (if domain requires)  
+- Lock down write operations in production  
 
 ---
 
-*Last updated: 2025-11-29*
+_Last updated: 2025-11-29_
