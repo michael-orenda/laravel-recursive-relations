@@ -1,78 +1,161 @@
 <?php
 
-namespace MichaelOrenda\RecursiveRelations\Traits;
+namespace MichaelOrenda\LaravelRecursiveRelations\Traits;
 
 use Illuminate\Support\Collection;
 
 trait HasRecursiveRelations
 {
-    public static function bootHasRecursiveRelations()
+    /**
+     * Parent relationship.
+     */
+    public function parent()
     {
-        static::saving(function ($model) {
-            if (empty($model->{$model->getParentColumn()})) {
-                $model->{$model->getParentColumn()} = null;
-            }
+        $config = static::recursiveConfig();
+
+        return $this->belongsTo(
+            static::class,
+            $config['parent_key'],
+            $config['local_key']
+        );
+    }
+
+    /**
+     * Children relationship.
+     */
+    public function children()
+    {
+        $config = static::recursiveConfig();
+
+        return $this->hasMany(
+            static::class,
+            $config['parent_key'],
+            $config['local_key']
+        );
+    }
+
+    /**
+     * Pure tree (nested hierarchy).
+     *
+     * Returns children, each child contains its own children,
+     * but NO repetition at all, and NO flattening.
+     */
+    public function tree(?int $depth = null): Collection
+    {
+        return $this->buildTree($this, $depth);
+    }
+
+    /**
+     * Recursive tree builder.
+     */
+    protected function buildTree($node, ?int $depth): Collection
+    {
+        // Stop if the depth limit is reached
+        if (!is_null($depth) && $depth === 0) {
+            return collect();
+        }
+
+        // Fetch children once
+        $children = $node->children()->get();
+
+        // Recursively attach children
+        return $children->map(function ($child) use ($depth) {
+            $child->setRelation(
+                'children',
+                $this->buildTree($child, is_null($depth) ? null : $depth - 1)
+            );
+
+            return $child;
         });
     }
 
-    public function parent()
+    /**
+     * Flat list of all descendants (no children loaded per node).
+     * NOTE: This version is clean and does not produce duplicated trees.
+     */
+    public function descendants(?int $depth = null): Collection
     {
-        return $this->belongsTo(static::class, $this->getParentColumn());
+        $results = collect();
+        $children = $this->children()->get();
+
+        foreach ($children as $child) {
+            $results->push($child);
+
+            if (is_null($depth) || $depth > 1) {
+                $results = $results->merge(
+                    $child->descendants(
+                        is_null($depth) ? null : $depth - 1
+                    )
+                );
+            }
+        }
+
+        // Important: DO NOT load 'children' here — avoids tree duplication
+        return $results;
     }
 
-    public function children()
+    /**
+     * Ancestors (parent → grandparent → up to root).
+     */
+    public function ancestors(): Collection
     {
-        return $this->hasMany(static::class, $this->getParentColumn());
-    }
+        $config = static::recursiveConfig();
+        $parentKey = $config['parent_key'];
 
-    public function ancestors()
-    {
-        $ancestors = collect([]);
-        $current = $this;
+        $ancestors = collect();
+        $current = $this->parent;
 
-        while ($current->parent) {
-            $ancestors->push($current->parent);
+        while ($current) {
+            $ancestors->push($current);
             $current = $current->parent;
         }
 
         return $ancestors;
     }
 
+    /**
+     * Return the top-most ancestor (the root of the tree).
+     */
     public function root()
     {
-        $current = $this;
-        while ($current->parent) {
-            $current = $current->parent;
-        }
-        return $current;
-    }
+        $node = $this;
 
-    public function descendants(int $depth = null): Collection
-    {
-        return $this->getDescendants($this, $depth);
-    }
-
-    private function getDescendants($node, $depth = null, $level = 1)
-    {
-        $descendants = collect();
-
-        foreach ($node->children as $child) {
-            $descendants->push($child);
-
-            if (is_null($depth) || $level < $depth) {
-                $descendants = $descendants->merge(
-                    $this->getDescendants($child, $depth, $level + 1)
-                );
-            }
+        while ($node->parent) {
+            $node = $node->parent;
         }
 
-        return $descendants;
+        return $node;
     }
 
-    public function getParentColumn()
+    /**
+     * Return the current node WITH its full nested children.
+     *
+     * Useful for API responses where the root must be included.
+     */
+    public function fullTree(?int $depth = null)
     {
-        return property_exists($this, 'parentColumn')
-            ? $this->parentColumn
-            : 'parent_id';
+        // clone to avoid overriding model state
+        $root = clone $this;
+
+        // attach nested children
+        $root->setRelation('children', $this->tree($depth));
+
+        return $root;
+    }
+
+    public function isRoot(): bool
+    {
+        return $this->parent === null;
+    }
+
+    /**
+     * Default configuration.
+     */
+    protected static function recursiveConfig(): array
+    {
+        return [
+            'parent_key' => 'parent_id',
+            'local_key'  => 'id',
+        ];
     }
 }

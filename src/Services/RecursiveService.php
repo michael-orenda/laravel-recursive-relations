@@ -1,6 +1,6 @@
 <?php
 
-namespace MichaelOrenda\RecursiveRelations\Services;
+namespace MichaelOrenda\LaravelRecursiveRelations\Services;
 
 class RecursiveService
 {

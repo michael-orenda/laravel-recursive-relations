@@ -1,9 +1,9 @@
 <?php
 
-namespace MichaelOrenda\RecursiveRelations;
+namespace MichaelOrenda\LaravelRecursiveRelations;
 
 use Illuminate\Support\ServiceProvider;
-use MichaelOrenda\RecursiveRelations\Services\RecursiveService;
+use MichaelOrenda\LaravelRecursiveRelations\Services\RecursiveService;
 
 class RecursiveRelationsServiceProvider extends ServiceProvider
 {

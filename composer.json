@@ -33,7 +33,7 @@
 
     "autoload": {
         "psr-4": {
-            "MichaelOrenda\\RecursiveRelations\\": "src/"
+            "MichaelOrenda\\LaravelRecursiveRelations\\": "src/"
         }
     },
     "require": {
@@ -43,7 +43,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "MichaelOrenda\\RecursiveRelations\\RecursiveRelationsServiceProvider"
+                "MichaelOrenda\\LaravelRecursiveRelations\\RecursiveRelationsServiceProvider"
             ]
         }
     }

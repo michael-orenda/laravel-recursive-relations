@@ -1,6 +1,6 @@
 <?php
 
-namespace MichaelOrenda\RecursiveRelations\Helpers;
+namespace MichaelOrenda\LaravelRecursiveRelations\Helpers;
 
 class TreeFormatter
 {

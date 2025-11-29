@@ -1,18 +1,34 @@
 <?php
 
-namespace MichaelOrenda\RecursiveRelations\Traits;
+namespace MichaelOrenda\LaravelRecursiveRelations\Traits;
 
 trait HasRecursiveCache
 {
     public static function bootHasRecursiveCache()
     {
-        static::saving(function ($model) {
-            $root = $model->root();
-            $model->root_id = $root->id ?? $model->id;
+        static::saved(function ($model) {
 
+            // Prevent infinite update loops
+            if ($model->isDirty('root_id') || $model->isDirty('depth') || $model->isDirty('path')) {
+                return;
+            }
+
+            // ===== ROOT ID =====
+            $root = $model->root();
+            $model->root_id = $root->id;
+
+            // ===== DEPTH =====
             $ancestors = $model->ancestors();
             $model->depth = $ancestors->count();
-            $model->path = $ancestors->reverse()->pluck('id')->implode('/') . '/' . $model->id;
+
+            // ===== PATH =====
+            $model->path = collect([
+                ...$ancestors->reverse()->pluck('id')->toArray(),
+                $model->id
+            ])->implode('/');
+
+            // Save without triggering recursion
+            $model->saveQuietly();
         });
     }
 }
