@@ -1,0 +1,50 @@
+{
+    "name": "michaelorenda/laravel-recursive-relations",
+    "description": "Recursive parent-child traversal for Eloquent models.",
+   "keywords": [
+        "laravel",
+        "eloquent",
+        "recursive",
+        "relations",
+        "tree",
+        "hierarchy",
+        "nested",
+        "parent-child"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/michaelorenda/laravel-recursive-relations",
+    
+    "authors": [
+        {
+            "name": "Michael Orenda",
+            "email": "rminchrist@gmail.com",
+            "homepage": "https://michael-orenda.com",
+            "role": "Software Engineer"
+        }
+    ],
+
+    "support": {
+        "issues": "https://github.com/michael-orenda/laravel-recursive-relations/issues",
+        "source": "https://github.com/michael-orenda/laravel-recursive-relations",
+        "docs": "https://michael-orenda.github.io/laravel-recursive-relations",
+        "email": "rminchrist@gmail.com"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "MichaelOrenda\\RecursiveRelations\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "MichaelOrenda\\RecursiveRelations\\RecursiveRelationsServiceProvider"
+            ]
+        }
+    }
+}
