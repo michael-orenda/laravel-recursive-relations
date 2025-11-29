@@ -1,7 +1,7 @@
 {
     "name": "michaelorenda/laravel-recursive-relations",
     "description": "Recursive parent-child traversal for Eloquent models.",
-   "keywords": [
+    "keywords": [
         "laravel",
         "eloquent",
         "recursive",
